@@ -1,0 +1,75 @@
+# Ex-8a: AdaBoost Classification
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# 🔹 Load dataset
+df = pd.read_csv("data.csv")  # change file name
+
+# 🔹 Features & target
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
+
+# 🔹 Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 🔹 Base model (weak learner)
+base_model = DecisionTreeClassifier(max_depth=1)
+
+# 🔹 AdaBoost model
+model = AdaBoostClassifier(estimator=base_model, n_estimators=50)
+
+# 🔹 Train
+model.fit(X_train, y_train)
+
+# 🔹 Predict
+y_pred = model.predict(X_test)
+
+# 🔹 Evaluation
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+
+
+# ============================================================
+# Ex-8b: Gradient Boosting Regression
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+
+# 🔹 Create dataset
+np.random.seed(42)
+X = np.random.rand(100, 1) - 0.5
+y = 3 * X[:, 0]**2 + 0.05 * np.random.randn(100)
+
+# 🔹 Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 🔹 Model
+model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1)
+
+# 🔹 Train
+model.fit(X_train, y_train)
+
+# 🔹 Predict
+y_pred = model.predict(X_test)
+
+# 🔹 Error
+print("MSE:", mean_squared_error(y_test, y_pred))
+
+# 🔹 Smooth curve for visualization
+X_range = np.linspace(X.min(), X.max(), 300).reshape(-1, 1)
+y_range_pred = model.predict(X_range)
+
+# 🔹 Plot
+plt.scatter(X, y, color="blue", label="Actual Data")
+plt.plot(X_range, y_range_pred, color="red", label="Gradient Boosting Prediction")
+plt.title("Gradient Boosting Regression")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.legend()
+plt.show()

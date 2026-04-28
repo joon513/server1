@@ -1,0 +1,39 @@
+# Ex-4: Perceptron (Single Layer Neural Network) - AND Gate
+
+import numpy as np
+
+# 🔹 Input and Output
+X = np.array([[0,0], [0,1], [1,0], [1,1]])
+y = np.array([[0],[0],[0],[1]])  # AND logic example
+
+# 🔹 Initialize weights and bias
+weights = np.random.rand(2,1)
+bias = 0
+
+# 🔹 Activation function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# 🔹 Training
+lr = 0.1
+for i in range(10000):
+    # Forward pass
+    z = np.dot(X, weights) + bias
+    output = sigmoid(z)
+
+    # Error
+    error = y - output
+
+    # Gradient
+    d_output = error * output * (1 - output)
+
+    # Update
+    weights += np.dot(X.T, d_output) * lr
+    bias += np.sum(d_output) * lr
+
+print("Final Weights:\n", weights)
+print("Final Bias:\n", bias)
+
+# 🔹 Prediction
+pred = sigmoid(np.dot(X, weights) + bias)
+print("Predictions:\n", pred)

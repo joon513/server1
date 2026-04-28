@@ -1,0 +1,94 @@
+# Ex-9a: KNN (K-Nearest Neighbors) Classification
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# 🔹 Load dataset
+df = pd.read_csv("data.csv")  # change file name
+
+# 🔹 Features & target
+X = df.iloc[:, :-1]
+y = df.iloc[:, -1]
+
+# 🔹 Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 🔹 Scaling (IMPORTANT for KNN)
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# 🔹 KNN Model
+model = KNeighborsClassifier(n_neighbors=5)
+
+# 🔹 Train
+model.fit(X_train, y_train)
+
+# 🔹 Predict
+y_pred = model.predict(X_test)
+
+# 🔹 Accuracy
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+
+# 🔹 Visualization (scatter plot with 2 features)
+X_vis = df.iloc[:, [0, 1]].values
+y_vis = df.iloc[:, -1].values
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X_vis, y_vis, test_size=0.2)
+
+model2 = KNeighborsClassifier(n_neighbors=5)
+model2.fit(X_train2, y_train2)
+
+plt.scatter(X_train2[:, 0], X_train2[:, 1], c=y_train2, cmap='viridis')
+plt.title("KNN Data Visualization")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.show()
+
+
+# ============================================================
+# Ex-9b: K-Means Clustering
+
+from sklearn.cluster import KMeans
+
+# 🔹 Load dataset
+df = pd.read_csv("data.csv")  # change file name
+
+# 🔹 Take 2 features for visualization
+X = df.iloc[:, [0, 1]].values
+
+# 🔹 Elbow Method (to find k)
+wcss = []
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, init='k-means++', n_init=10)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+plt.plot(range(1, 11), wcss)
+plt.title("Elbow Method")
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+plt.show()
+
+# 🔹 Apply K-Means (choose k = 3 or 5 based on elbow graph)
+kmeans = KMeans(n_clusters=3, init='k-means++', n_init=10)
+y_kmeans = kmeans.fit_predict(X)
+
+# 🔹 Visualization
+plt.scatter(X[y_kmeans == 0, 0], X[y_kmeans == 0, 1], label="Cluster 1")
+plt.scatter(X[y_kmeans == 1, 0], X[y_kmeans == 1, 1], label="Cluster 2")
+plt.scatter(X[y_kmeans == 2, 0], X[y_kmeans == 2, 1], label="Cluster 3")
+
+# 🔹 Centroids
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1],
+            s=200, color='black', label="Centroids")
+plt.title("K-Means Clustering")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+plt.show()

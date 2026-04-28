@@ -1,0 +1,40 @@
+# Ex-10: Principal Component Analysis (PCA)
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 🔹 Load dataset from CSV
+df = pd.read_csv("your_file.csv")  # replace with your file path
+
+# 🔹 Optional: drop non-numeric columns if present
+df = df.select_dtypes(include=['number'])
+
+# 🔹 View data
+print(df.head())
+
+# 🔹 Standardize the data
+scaler = StandardScaler()
+scaled_data = pd.DataFrame(scaler.fit_transform(df), columns=df.columns)
+
+# 🔹 Heatmap of original features
+plt.figure()
+sns.heatmap(scaled_data.corr(), annot=True)
+plt.title("Correlation Heatmap (Before PCA)")
+plt.show()
+
+# 🔹 Apply PCA
+pca = PCA(n_components=3)
+data_pca = pca.fit_transform(scaled_data)
+
+# 🔹 Convert to DataFrame
+data_pca = pd.DataFrame(data_pca, columns=['PC1', 'PC2', 'PC3'])
+print(data_pca.head())
+
+# 🔹 Heatmap after PCA
+plt.figure()
+sns.heatmap(data_pca.corr(), annot=True)
+plt.title("Correlation Heatmap (After PCA)")
+plt.show()
