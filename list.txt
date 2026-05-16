@@ -1,0 +1,15 @@
+File Index
+==========
+
+File Name  | Topic
+-----------|--------------------------------------------------------------
+ex1.txt    | Univariate, Bivariate & Multivariate Regression and Analysis
+ex2.txt    | Simple Linear Regression using Least Squares Method
+ex3.txt    | Logistic Regression
+ex4.txt    | Perceptron (Single Layer Neural Network) - AND Gate
+ex5.txt    | MLP (Backpropagation) Classification
+ex6.txt    | SVM (Support Vector Machine) with Decision Boundary
+ex7.txt    | Decision Tree Classification
+ex8.txt    | AdaBoost Classification & Gradient Boosting Regression
+ex9.txt    | KNN Classification & K-Means Clustering
+ex10.txt   | Principal Component Analysis (PCA)
