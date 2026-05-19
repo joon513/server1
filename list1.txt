@@ -843,6 +843,216 @@ plt.show()
 
 
 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Maths":   [90,85,88,70,65,95,80,75],
+    "Physics": [85,80,84,65,60,92,78,72],
+    "Chemistry":[88,82,86,68,62,94,79,74],
+    "Biology": [92,86,89,72,66,96,81,76]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 VIEW DATA
+# =====================================================
+
+print(df.head())
+
+# =====================================================
+# 🔹 STANDARDIZE DATA
+# =====================================================
+
+scaler = StandardScaler()
+
+scaled_data = pd.DataFrame(
+    scaler.fit_transform(df),
+    columns=df.columns
+)
+
+# =====================================================
+# 🔹 HEATMAP BEFORE PCA
+# =====================================================
+
+plt.figure(figsize=(6,5))
+
+sns.heatmap(
+    scaled_data.corr(),
+    annot=True
+)
+
+plt.title("Correlation Heatmap Before PCA")
+
+plt.show()
+
+# =====================================================
+# 🔹 APPLY PCA
+# =====================================================
+
+pca = PCA(n_components=3)
+
+data_pca = pca.fit_transform(scaled_data)
+
+# =====================================================
+# 🔹 CONVERT PCA DATA TO DATAFRAME
+# =====================================================
+
+data_pca = pd.DataFrame(
+    data_pca,
+    columns=["PC1", "PC2", "PC3"]
+)
+
+print("\nPCA Data:\n")
+print(data_pca.head())
+
+# =====================================================
+# 🔹 HEATMAP AFTER PCA
+# =====================================================
+
+plt.figure(figsize=(6,5))
+
+sns.heatmap(
+    data_pca.corr(),
+    annot=True
+)
+
+plt.title("Correlation Heatmap After PCA")
+
+plt.show()
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    accuracy_score
+)
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Hours": [1,2,3,4,5,6,7,8,9,10],
+    "Marks": [20,25,30,35,40,50,60,70,80,90],
+    "Result": [0,0,0,0,0,1,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["Hours", "Marks"]]
+y = df["Result"]
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 FEATURE SCALING
+# =====================================================
+
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# =====================================================
+# 🔹 MLP CLASSIFIER MODEL
+# =====================================================
+
+model = MLPClassifier(
+    hidden_layer_sizes=(10,),
+    activation='relu',
+    max_iter=500,
+    random_state=1
+)
+
+# 🔹 Train Model
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 RESULTS
+# =====================================================
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION - ACTUAL DATA
+# =====================================================
+
+plt.scatter(
+    df["Hours"],
+    df["Marks"],
+    c=df["Result"],
+    s=100
+)
+
+plt.xlabel("Hours")
+plt.ylabel("Marks")
+plt.title("Actual Classification Data")
+
+plt.show()
+
+# =====================================================
+# 🔹 VISUALIZATION - PREDICTED OUTPUT
+# =====================================================
+
+plt.scatter(
+    X_test[:,0],
+    X_test[:,1],
+    c=y_pred,
+    s=100
+)
+
+plt.xlabel("Scaled Hours")
+plt.ylabel("Scaled Marks")
+plt.title("MLP Predicted Output")
+
+plt.show()
+
+
+
+
+
 
 
 
