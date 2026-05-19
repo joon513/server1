@@ -1,0 +1,855 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# 🔹 Create dataset manually
+data = {
+    "Feature1": [1, 2, 3, 4, 5, 6, 7, 8],
+    "Feature2": [2, 1, 4, 3, 5, 7, 6, 8],
+    "Target":   [3, 4, 5, 6, 7, 8, 9, 10]
+}
+
+df = pd.DataFrame(data)
+
+# 🔹 Display dataset
+print(df)
+
+# 🔹 Drop missing values
+df = df.dropna()
+
+# =========================================================
+# 🔹 -------- UNIVARIATE REGRESSION --------
+# =========================================================
+
+X_uni = df[["Feature1"]]   # one feature
+y = df["Target"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_uni, y, test_size=0.2, random_state=42
+)
+
+model_uni = LinearRegression()
+model_uni.fit(X_train, y_train)
+
+y_pred_uni = model_uni.predict(X_test)
+
+print("\nUnivariate Regression")
+print("Slope:", model_uni.coef_[0])
+print("Intercept:", model_uni.intercept_)
+print("MSE:", mean_squared_error(y_test, y_pred_uni))
+
+# 🔹 Visualization
+plt.scatter(X_uni, y, color="blue")
+plt.plot(X_uni, model_uni.predict(X_uni), color="red")
+plt.xlabel("Feature1")
+plt.ylabel("Target")
+plt.title("Univariate Linear Regression")
+plt.show()
+
+
+# =========================================================
+# 🔹 -------- BIVARIATE REGRESSION --------
+# =========================================================
+
+X_bi = df[["Feature1", "Feature2"]]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_bi, y, test_size=0.2, random_state=42
+)
+
+model_bi = LinearRegression()
+model_bi.fit(X_train, y_train)
+
+y_pred_bi = model_bi.predict(X_test)
+
+print("\nBivariate Regression")
+print("Coefficients:", model_bi.coef_)
+print("Intercept:", model_bi.intercept_)
+print("MSE:", mean_squared_error(y_test, y_pred_bi))
+
+# 🔹 Visualization
+plt.scatter(df["Feature1"], y, color="blue", label="Feature1")
+plt.scatter(df["Feature2"], y, color="green", label="Feature2")
+plt.xlabel("Features")
+plt.ylabel("Target")
+plt.title("Bivariate Regression")
+plt.legend()
+plt.show()
+
+
+# =========================================================
+# 🔹 -------- MULTIVARIATE REGRESSION --------
+# =========================================================
+
+X_multi = df.iloc[:, :-1]   # all features except target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_multi, y, test_size=0.2, random_state=42
+)
+
+model_multi = LinearRegression()
+model_multi.fit(X_train, y_train)
+
+y_pred_multi = model_multi.predict(X_test)
+
+print("\nMultivariate Regression")
+print("Coefficients:", model_multi.coef_)
+print("Intercept:", model_multi.intercept_)
+print("MSE:", mean_squared_error(y_test, y_pred_multi))
+
+# 🔹 Visualization
+plt.plot(y_test.values, label="Actual", marker='o')
+plt.plot(y_pred_multi, label="Predicted", marker='x')
+plt.xlabel("Test Data")
+plt.ylabel("Target")
+plt.title("Multivariate Regression")
+plt.legend()
+plt.show()
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 🔹 Create dataset manually
+data = {
+    "X": [1, 2, 3, 4, 5, 6],
+    "Y": [2, 4, 5, 4, 5, 7]
+}
+
+df = pd.DataFrame(data)
+
+# 🔹 Take columns
+x = df["X"].values
+y = df["Y"].values
+
+# 🔹 Mean
+x_mean = np.mean(x)
+y_mean = np.mean(y)
+
+# 🔹 Least Squares Formula
+m = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean)**2)
+c = y_mean - m * x_mean
+
+print("Slope (m):", m)
+print("Intercept (c):", c)
+
+# 🔹 Prediction line
+y_pred = m * x + c
+
+# 🔹 Plot Graph
+plt.scatter(x, y, color="blue", label="Actual Data")
+plt.plot(x, y_pred, color="red", label="Regression Line")
+
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.title("Simple Linear Regression")
+plt.legend()
+
+plt.show()
+
+# 🔹 R2 Score
+ss_total = np.sum((y - y_mean)**2)
+ss_res = np.sum((y - y_pred)**2)
+
+r2 = 1 - (ss_res / ss_total)
+
+print("R2 Score:", r2)
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# 🔹 Manual Dataset
+data = {
+    "Hours": [1,2,3,4,5,6,7,8],
+    "Marks": [20,25,35,40,50,60,70,80],
+    "Result": [0,0,0,0,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# 🔹 Features and Target
+X = df[["Hours", "Marks"]]
+y = df["Result"]
+
+# 🔹 Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=1
+)
+
+# 🔹 Scaling
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# 🔹 Logistic Regression Model
+model = LogisticRegression()
+
+model.fit(X_train, y_train)
+
+# 🔹 Prediction
+y_pred = model.predict(X_test)
+
+# 🔹 Accuracy & Confusion Matrix
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# ====================================================
+# 🔹 VISUALIZATION OF OUTPUT
+# ====================================================
+
+# 🔹 Actual Data Visualization
+plt.scatter(
+    df["Hours"],
+    df["Marks"],
+    c=df["Result"],
+    cmap="bwr"
+)
+
+plt.xlabel("Hours")
+plt.ylabel("Marks")
+plt.title("Actual Classification Data")
+
+plt.show()
+
+# ====================================================
+# 🔹 Predicted Output Visualization
+# ====================================================
+
+plt.scatter(
+    X_test[:, 0],
+    X_test[:, 1],
+    c=y_pred,
+    cmap="bwr"
+)
+
+plt.xlabel("Scaled Hours")
+plt.ylabel("Scaled Marks")
+plt.title("Predicted Classification Output")
+
+plt.show()
+
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Feature1": [1,2,3,4,5,6,7,8],
+    "Feature2": [2,3,3,5,5,7,8,9],
+    "Class":    [0,0,0,0,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["Feature1", "Feature2"]].values
+y = df["Class"].values
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 FEATURE SCALING
+# =====================================================
+
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# =====================================================
+# 🔹 SVM MODEL
+# =====================================================
+
+model = SVC(kernel='linear')
+
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 RESULTS
+# =====================================================
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION - DECISION BOUNDARY
+# =====================================================
+
+x_min, x_max = X_train[:,0].min()-1, X_train[:,0].max()+1
+
+y_min, y_max = X_train[:,1].min()-1, X_train[:,1].max()+1
+
+xx, yy = np.meshgrid(
+    np.arange(x_min, x_max, 0.01),
+    np.arange(y_min, y_max, 0.01)
+)
+
+Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+
+Z = Z.reshape(xx.shape)
+
+# 🔹 Decision Boundary
+plt.contourf(xx, yy, Z, alpha=0.3)
+
+# 🔹 Training Points
+plt.scatter(
+    X_train[:,0],
+    X_train[:,1],
+    c=y_train,
+    edgecolor='k',
+    s=100
+)
+
+plt.title("SVM Decision Boundary")
+
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+
+plt.show()
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Hours": [1,2,3,4,5,6,7,8],
+    "Marks": [20,25,35,40,50,60,70,80],
+    "Result": [0,0,0,0,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["Hours", "Marks"]]
+y = df["Result"]
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 DECISION TREE MODEL
+# =====================================================
+
+model = DecisionTreeClassifier()
+
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 RESULTS
+# =====================================================
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION
+# =====================================================
+
+plt.figure(figsize=(10,6))
+
+plot_tree(
+    model,
+    filled=True,
+    feature_names=["Hours", "Marks"],
+    class_names=["Fail", "Pass"]
+)
+
+plt.title("Decision Tree")
+
+plt.show()
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Hours": [1,2,3,4,5,6,7,8],
+    "Marks": [20,25,35,40,50,60,70,80],
+    "Result": [0,0,0,0,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["Hours", "Marks"]]
+y = df["Result"]
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 BASE MODEL (WEAK LEARNER)
+# =====================================================
+
+base_model = DecisionTreeClassifier(max_depth=1)
+
+# =====================================================
+# 🔹 ADABOOST MODEL
+# =====================================================
+
+model = AdaBoostClassifier(
+    estimator=base_model,
+    n_estimators=50,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 TRAIN MODEL
+# =====================================================
+
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 RESULTS
+# =====================================================
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION
+# =====================================================
+
+plt.scatter(
+    X_test["Hours"],
+    X_test["Marks"],
+    c=y_pred,
+    s=100
+)
+
+plt.xlabel("Hours")
+plt.ylabel("Marks")
+
+plt.title("AdaBoost Predicted Output")
+
+plt.show()
+
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "X": [1,2,3,4,5,6,7,8],
+    "Y": [2,4,5,4,5,7,8,9]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["X"]]
+y = df["Y"]
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 GRADIENT BOOSTING REGRESSOR MODEL
+# =====================================================
+
+model = GradientBoostingRegressor(
+    n_estimators=100,
+    learning_rate=0.1,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 TRAIN MODEL
+# =====================================================
+
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 ERROR
+# =====================================================
+
+print("MSE:", mean_squared_error(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION
+# =====================================================
+
+# 🔹 Actual Data
+plt.scatter(
+    X,
+    y,
+    label="Actual Data"
+)
+
+# 🔹 Predicted Line
+plt.plot(
+    X_test,
+    y_pred,
+    linewidth=2,
+    label="Predicted Output"
+)
+
+plt.xlabel("X")
+plt.ylabel("Y")
+
+plt.title("Gradient Boosting Regression")
+
+plt.legend()
+
+plt.show()
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.cluster import KMeans
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Feature1": [1,2,3,4,5,6,7,8,9,10],
+    "Feature2": [2,3,2,5,6,5,8,9,8,10]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 TAKE 2 FEATURES
+# =====================================================
+
+X = df[["Feature1", "Feature2"]].values
+
+# =====================================================
+# 🔹 ELBOW METHOD
+# =====================================================
+
+wcss = []
+
+for i in range(1, 11):
+
+    kmeans = KMeans(
+        n_clusters=i,
+        init='k-means++',
+        n_init=10,
+        random_state=1
+    )
+
+    kmeans.fit(X)
+
+    wcss.append(kmeans.inertia_)
+
+# 🔹 Elbow Graph
+plt.plot(range(1,11), wcss, marker='o')
+
+plt.title("Elbow Method")
+
+plt.xlabel("Number of Clusters")
+plt.ylabel("WCSS")
+
+plt.show()
+
+# =====================================================
+# 🔹 APPLY K-MEANS
+# =====================================================
+
+kmeans = KMeans(
+    n_clusters=3,
+    init='k-means++',
+    n_init=10,
+    random_state=1
+)
+
+y_kmeans = kmeans.fit_predict(X)
+
+# =====================================================
+# 🔹 VISUALIZATION OF CLUSTERS
+# =====================================================
+
+# 🔹 Cluster 1
+plt.scatter(
+    X[y_kmeans == 0, 0],
+    X[y_kmeans == 0, 1],
+    s=100,
+    label="Cluster 1"
+)
+
+# 🔹 Cluster 2
+plt.scatter(
+    X[y_kmeans == 1, 0],
+    X[y_kmeans == 1, 1],
+    s=100,
+    label="Cluster 2"
+)
+
+# 🔹 Cluster 3
+plt.scatter(
+    X[y_kmeans == 2, 0],
+    X[y_kmeans == 2, 1],
+    s=100,
+    label="Cluster 3"
+)
+
+# 🔹 Centroids
+plt.scatter(
+    kmeans.cluster_centers_[:,0],
+    kmeans.cluster_centers_[:,1],
+    s=200,
+    color='black',
+    label="Centroids"
+)
+
+plt.title("K-Means Clustering")
+
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+
+plt.legend()
+
+plt.show()
+
+
+
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# =====================================================
+# 🔹 MANUAL DATASET
+# =====================================================
+
+data = {
+    "Hours": [1,2,3,4,5,6,7,8],
+    "Marks": [20,25,35,40,50,60,70,80],
+    "Result": [0,0,0,0,1,1,1,1]
+}
+
+df = pd.DataFrame(data)
+
+# =====================================================
+# 🔹 FEATURES AND TARGET
+# =====================================================
+
+X = df[["Hours", "Marks"]]
+y = df["Result"]
+
+# =====================================================
+# 🔹 TRAIN TEST SPLIT
+# =====================================================
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X,
+    y,
+    test_size=0.2,
+    random_state=1
+)
+
+# =====================================================
+# 🔹 FEATURE SCALING
+# =====================================================
+
+sc = StandardScaler()
+
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# =====================================================
+# 🔹 KNN MODEL
+# =====================================================
+
+model = KNeighborsClassifier(n_neighbors=5)
+
+# 🔹 Train Model
+model.fit(X_train, y_train)
+
+# =====================================================
+# 🔹 PREDICTION
+# =====================================================
+
+y_pred = model.predict(X_test)
+
+# =====================================================
+# 🔹 RESULTS
+# =====================================================
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+# =====================================================
+# 🔹 VISUALIZATION
+# =====================================================
+
+# 🔹 Actual Dataset Visualization
+plt.scatter(
+    df["Hours"],
+    df["Marks"],
+    c=df["Result"],
+    s=100
+)
+
+plt.xlabel("Hours")
+plt.ylabel("Marks")
+
+plt.title("KNN Actual Data")
+
+plt.show()
+
+# =====================================================
+
+# 🔹 Predicted Output Visualization
+plt.scatter(
+    X_test[:,0],
+    X_test[:,1],
+    c=y_pred,
+    s=100
+)
+
+plt.xlabel("Scaled Hours")
+plt.ylabel("Scaled Marks")
+
+plt.title("KNN Predicted Output")
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
